@@ -36,9 +36,8 @@ const AppContent: React.FC = () => {
 
   const handleSearch = async (query: string) => {
     setState(prev => ({ ...prev, isLoading: true }));
-    
     try {
-      const pokemon = await PokemonApiService.searchPokemon(query);
+      const pokemon = await PokemonApiService.getPokemon(query);
       setState(prev => ({
         ...prev,
         currentPokemon: pokemon,
@@ -46,7 +45,6 @@ const AppContent: React.FC = () => {
         isLoading: false,
         searchResults: [pokemon],
       }));
-      
       toast({
         title: "Pokemon found!",
         description: `Found ${pokemon.name} (#${pokemon.id})`,
@@ -55,37 +53,19 @@ const AppContent: React.FC = () => {
       setState(prev => ({ ...prev, isLoading: false }));
       toast({
         title: "Pokemon not found",
-        description: `Could not find pokemon "${query}". Try a different name or ID.`,
+        description: `Could not find pokemon \"${query}\". Try a different name or ID.`,
         variant: "destructive",
       });
     }
   };
 
-  const handleRandomSearch = async () => {
-    setState(prev => ({ ...prev, isLoading: true }));
-    
-    try {
-      const pokemon = await PokemonApiService.getRandomPokemon();
-      setState(prev => ({
-        ...prev,
-        currentPokemon: pokemon,
-        currentView: 'details',
-        isLoading: false,
-        searchResults: [pokemon],
-      }));
-      
-      toast({
-        title: "Random Pokemon found!",
-        description: `Discovered ${pokemon.name} (#${pokemon.id})`,
-      });
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      toast({
-        title: "Error",
-        description: "Could not fetch random pokemon. Please try again.",
-        variant: "destructive",
-      });
-    }
+  // El backend no soporta random, así que deshabilitamos la función
+  const handleRandomSearch = () => {
+    toast({
+      title: "Not supported",
+      description: "Random Pokemon is not supported by the backend.",
+      variant: "destructive",
+    });
   };
 
   const handleViewDetails = (pokemon: Pokemon) => {
@@ -99,7 +79,7 @@ const AppContent: React.FC = () => {
   const handleViewPokemonByName = async (name: string) => {
     setState(prev => ({ ...prev, isLoading: true }));
     try {
-      const pokemon = await PokemonApiService.searchPokemon(name);
+      const pokemon = await PokemonApiService.getPokemon(name);
       handleViewDetails(pokemon);
     } catch (error) {
       toast({
@@ -121,16 +101,16 @@ const AppContent: React.FC = () => {
     }));
   };
 
+  // El backend no soporta comparación múltiple directa, así que solo mostramos uno a la vez
   const handleCompareTeam = async () => {
     if (favorites.length === 0) return;
-    
     setState(prev => ({ ...prev, isLoading: true }));
     try {
-      const pokemonNames = favorites.map(fav => fav.name);
-      const pokemonData = await PokemonApiService.getMultiplePokemon(pokemonNames);
+      // Solo tomamos el primero para la comparación
+      const pokemon = await PokemonApiService.getPokemon(favorites[0].name);
       setState(prev => ({
         ...prev,
-        comparePokemon: pokemonData,
+        comparePokemon: [pokemon],
         currentView: 'compare',
         isLoading: false,
       }));

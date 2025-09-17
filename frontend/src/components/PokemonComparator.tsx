@@ -27,7 +27,7 @@ export const PokemonComparator: React.FC<PokemonComparatorProps> = ({
 
     setIsLoading(true);
     try {
-      const newPokemon = await PokemonApiService.searchPokemon(searchQuery);
+  const newPokemon = await PokemonApiService.getPokemon(searchQuery);
       
       // Evitar duplicados
       if (pokemon.some(p => p.id === newPokemon.id)) {

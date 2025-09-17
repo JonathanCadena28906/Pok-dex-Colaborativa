@@ -1,109 +1,127 @@
-import { Pokemon, PokemonListResponse, ApiResponse } from '@/types/pokemon';
 
-const BASE_URL = 'http://localhost:3001/api';
+
+
+const BASE_URL = 'http://localhost:3000';
+
+// Tipos básicos según backend
+export interface PokemonStat {
+  base_stat: number;
+  effort: number;
+  stat: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface PokemonType {
+  slot: number;
+  type: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface PokemonAbility {
+  is_hidden: boolean;
+  slot: number;
+  ability: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface PokemonResponse {
+  id: number;
+  name: string;
+  stats: PokemonStat[];
+  types: PokemonType[];
+  abilities: PokemonAbility[];
+}
+
+export interface PokemonStatsResponse {
+  stats: PokemonStat[];
+}
+
+export interface PokemonTypesResponse {
+  types: PokemonType[];
+}
+
+export interface PokemonAbilitiesResponse {
+  abilities: PokemonAbility[];
+}
 
 export class PokemonApiService {
-  private static async fetchFromBackend<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
-    try {
-      const response = await fetch(`${BASE_URL}${endpoint}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options?.headers,
-        },
-        ...options,
-      });
-      
-      const result: ApiResponse<T> = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || `HTTP ${response.status}`);
-      }
-      
-      return result;
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Network error');
+  // Info completa de un Pokémon
+  static async getPokemon(identifier: string | number): Promise<PokemonResponse> {
+    const res = await fetch(`${BASE_URL}/pokemon/${identifier}`);
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || 'Pokémon no encontrado');
     }
+    return res.json();
   }
 
-  static async searchPokemon(query: string): Promise<Pokemon> {
-    const result = await this.fetchFromBackend<Pokemon>(`/pokemon/${query.toLowerCase()}`);
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || `Pokemon "${query}" not found`);
+  // Stats de un Pokémon
+  static async getPokemonStats(identifier: string | number): Promise<PokemonStatsResponse> {
+    const res = await fetch(`${BASE_URL}/pokemon/${identifier}/stats`);
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || 'Pokémon no encontrado');
     }
-    
-    return result.data;
+    return res.json();
   }
 
-  static async getPokemonList(limit = 20, offset = 0): Promise<PokemonListResponse> {
-    const result = await this.fetchFromBackend<PokemonListResponse>(`/pokemon?limit=${limit}&offset=${offset}`);
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to fetch pokemon list');
+  // Tipos de un Pokémon
+  static async getPokemonTypes(identifier: string | number): Promise<PokemonTypesResponse> {
+    const res = await fetch(`${BASE_URL}/pokemon/${identifier}/types`);
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || 'Pokémon no encontrado');
     }
-    
-    return result.data;
+    return res.json();
   }
 
-  static async getPokemonById(id: number): Promise<Pokemon> {
-    return this.searchPokemon(id.toString());
+  // Habilidades de un Pokémon
+  static async getPokemonAbilities(identifier: string | number): Promise<PokemonAbilitiesResponse> {
+    const res = await fetch(`${BASE_URL}/pokemon/${identifier}/abilities`);
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || 'Pokémon no encontrado');
+    }
+    return res.json();
   }
 
-  static async getRandomPokemon(): Promise<Pokemon> {
-    const result = await this.fetchFromBackend<Pokemon>('/pokemon/random/get');
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to fetch random pokemon');
+  // Favoritos
+  static async addFavorite(identifier: string | number): Promise<{ favorites: string[] }> {
+    const res = await fetch(`${BASE_URL}/favorites/${identifier}`, { method: 'POST' });
+    if (!res.ok) {
+      throw new Error('No se pudo agregar a favoritos');
     }
-    
-    return result.data;
+    return res.json();
   }
 
-  static async getPokemonByType(type: string): Promise<any> {
-    const result = await this.fetchFromBackend<any>(`/type/${type}`);
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || `Type "${type}" not found`);
+  static async getFavorites(): Promise<{ favorites: string[] }> {
+    const res = await fetch(`${BASE_URL}/favorites`);
+    if (!res.ok) {
+      throw new Error('No se pudo obtener favoritos');
     }
-    
-    return result.data;
+    return res.json();
   }
 
-  // Método para obtener múltiples pokemon (para comparación)
-  static async getMultiplePokemon(queries: string[]): Promise<Pokemon[]> {
-    const result = await this.fetchFromBackend<Pokemon[]>('/pokemon/multiple', {
-      method: 'POST',
-      body: JSON.stringify({ queries }),
-    });
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to fetch multiple pokemon');
+  // Comparaciones
+  static async addComparison(identifier: string | number): Promise<{ comparisons: string[] }> {
+    const res = await fetch(`${BASE_URL}/comparisons/${identifier}`, { method: 'POST' });
+    if (!res.ok) {
+      throw new Error('No se pudo agregar a comparaciones');
     }
-    
-    return result.data;
+    return res.json();
   }
 
-  // Método para obtener estadísticas del cache del backend
-  static async getCacheStats(): Promise<any> {
-    const result = await this.fetchFromBackend<any>('/cache/stats');
-    
-    if (!result.success || !result.data) {
-      throw new Error(result.error || 'Failed to fetch cache stats');
+  static async getComparisons(): Promise<{ comparisons: string[] }> {
+    const res = await fetch(`${BASE_URL}/comparisons`);
+    if (!res.ok) {
+      throw new Error('No se pudo obtener comparaciones');
     }
-    
-    return result.data;
-  }
-
-  // Método para limpiar el cache del backend
-  static async clearCache(): Promise<any> {
-    const result = await this.fetchFromBackend<any>('/cache', {
-      method: 'DELETE',
-    });
-    
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to clear cache');
-    }
-    
-    return result;
+    return res.json();
   }
 }
