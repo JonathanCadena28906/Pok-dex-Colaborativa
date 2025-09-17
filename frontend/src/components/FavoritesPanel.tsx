@@ -137,7 +137,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                       onClick={() => onViewPokemon(pokemon.name)}
                       size="sm"
                       variant="ghost"
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+                      className="h-8 w-8 p-0 bg-pink-100 hover:bg-pink-200 text-pink-600 hover:text-red-600 border border-pink-200"
                     >
                       <Heart className="h-4 w-4" />
                     </Button>
@@ -146,7 +146,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                     onClick={() => removeFavorite(pokemon.id)}
                     size="sm"
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+                    className="h-8 w-8 p-0 bg-rose-100 hover:bg-rose-200 text-rose-600 hover:text-red-600 border border-rose-200"
                   >
                     <X className="h-4 w-4" />
                   </Button>
