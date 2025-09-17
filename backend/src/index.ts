@@ -41,9 +41,29 @@ async function fetchPokemon(
   return {
     id: data.id,
     name: data.name,
+    height: data.height,
+    weight: data.weight,
+    base_experience: data.base_experience,
+    sprites: {
+      front_default: data.sprites.front_default,
+      front_shiny: data.sprites.front_shiny,
+      other: {
+        "official-artwork": {
+          front_default:
+            data.sprites.other["official-artwork"]?.front_default ||
+            data.sprites.front_default,
+        },
+        dream_world: {
+          front_default:
+            data.sprites.other.dream_world?.front_default ||
+            data.sprites.front_default,
+        },
+      },
+    },
     stats: data.stats,
     types: data.types,
     abilities: data.abilities,
+    species: data.species,
   };
 }
 

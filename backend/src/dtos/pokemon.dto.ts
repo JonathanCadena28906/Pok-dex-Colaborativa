@@ -27,9 +27,28 @@ export interface PokemonAbility {
 export interface PokemonResponse {
   id: number;
   name: string;
+  height: number;
+  weight: number;
+  base_experience: number;
+  sprites: {
+    front_default: string;
+    front_shiny: string;
+    other: {
+      "official-artwork": {
+        front_default: string;
+      };
+      dream_world: {
+        front_default: string;
+      };
+    };
+  };
   stats: PokemonStat[];
   types: PokemonType[];
   abilities: PokemonAbility[];
+  species: {
+    name: string;
+    url: string;
+  };
 }
 
 export interface PokemonStatsResponse {
