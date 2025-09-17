@@ -10,6 +10,21 @@ import { Cache } from "./types/cache";
 
 const fastify = Fastify();
 
+// Registrar CORS para permitir requests del frontend
+fastify.addHook("preHandler", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  reply.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (request.method === "OPTIONS") {
+    reply.code(200).send();
+    return;
+  }
+});
+
 // Memoria cache simple
 const cache: Cache = {
   favorites: [],
