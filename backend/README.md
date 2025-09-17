@@ -3,6 +3,14 @@
 
 API sencilla con Fastify y TypeScript para consultar información de Pokémon usando la PokeAPI. Incluye endpoints para obtener información completa, stats, tipos, habilidades, favoritos y comparaciones. Estructura con carpetas para tipos y DTOs.
 
+## Instalación
+
+1. Clona el repositorio.
+2. Entra a la carpeta `backend`.
+3. Instala las dependencias:
+
+- `npm install`
+
 ## Scripts
 
 - `npm run dev`: Ejecuta en modo desarrollo
