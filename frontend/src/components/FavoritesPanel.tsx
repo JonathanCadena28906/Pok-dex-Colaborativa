@@ -65,7 +65,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-gray-500 hover:text-red-600"
+                  className="bg-rose-100 hover:bg-rose-200 text-rose-600 hover:text-red-600 border border-rose-200"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

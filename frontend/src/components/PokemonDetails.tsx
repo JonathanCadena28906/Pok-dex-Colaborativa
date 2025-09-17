@@ -54,7 +54,7 @@ export const PokemonDetails: React.FC<PokemonDetailsProps> = ({
               <Button
                 variant="ghost"
                 onClick={onBack}
-                className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                className="flex items-center gap-2 bg-pink-100 hover:bg-pink-200 text-pink-600 hover:text-red-600 border border-pink-200"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back
